@@ -1,0 +1,11 @@
+{
+  "lawyer_name": "楠哥",
+  "firm_name": "XX律师事务所",
+  "license_no": "1110120XXXXXX",
+  "default_court": "北京市朝阳区法院",
+  "feishu_webhook": "",
+  "email": "",
+  "integration_enabled": false,
+  "knowledge_base_path": "L4_知识库层",
+  "state_path": ".state"
+}
