@@ -1,4 +1,5 @@
 {
+  "schema_version": 2,
   "lawyer_name": "楠哥",
   "firm_name": "XX律师事务所",
   "license_no": "1110120XXXXXX",
@@ -7,5 +8,14 @@
   "email": "",
   "integration_enabled": false,
   "knowledge_base_path": "L4_知识库层",
-  "state_path": ".state"
+  "state_path": ".state",
+  "domains": {
+    "active": ["医疗损害", "劳动争议", "合同纠纷"],
+    "available": ["医疗损害", "劳动争议", "合同纠纷", "民商综合", "行政诉讼", "刑事辩护", "婚姻家事", "知识产权"],
+    "note": "启用领域见 L0_存储层/领域配置.md，启用前需填充对应知识分片"
+  },
+  "extensions": {
+    "modules_registered": ["M01", "M02", "M03", "M04", "M05", "M06"],
+    "note": "模块登记见 L0_存储层/模块注册表.md"
+  }
 }
