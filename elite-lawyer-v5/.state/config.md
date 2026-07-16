@@ -16,6 +16,12 @@
 | `integration_enabled` | 是否启用外部集成（飞书/邮件） | false | 否 |
 | `knowledge_base_path` | 知识库路径 | L4_知识库层 | 否 |
 | `state_path` | 状态文件路径 | .state | 否 |
+| `domains` | 启用/可用业务领域（见 领域配置.md） | active: [医疗损害, 劳动争议, 合同纠纷] | 否 |
+| `extensions.modules_registered` | 已注册功能模块（见 模块注册表.md） | [M01..M06] | 否 |
+| `mcp_sources.pkulaw` | 北大法宝法律数据库 MCP（外部知识源，**预留**） | enabled: false, status: reserved | 否 |
+| `integrations.tencent_ima` | 腾讯 ima 接口（外部客户端/知识同步，**预留**） | enabled: false, status: reserved | 否 |
+
+> V6.1 新增 `mcp_sources` / `integrations` 为**预留扩展字段**，默认 `enabled=false`，不影响现有行为（向后兼容，`schema_version` 仍为 2）。详见 `L0_存储层/集成接口.md`。
 
 ## 使用约定
 

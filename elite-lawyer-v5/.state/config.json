@@ -17,5 +17,21 @@
   "extensions": {
     "modules_registered": ["M01", "M02", "M03", "M04", "M05", "M06"],
     "note": "模块登记见 L0_存储层/模块注册表.md"
+  },
+  "mcp_sources": {
+    "pkulaw": {
+      "enabled": false,
+      "type": "legal_db_mcp",
+      "status": "reserved",
+      "note": "北大法宝法律数据库 MCP，外部知识源扩展点（I01），见 L0_存储层/集成接口.md"
+    }
+  },
+  "integrations": {
+    "tencent_ima": {
+      "enabled": false,
+      "type": "knowledge_client",
+      "status": "reserved",
+      "note": "腾讯 ima 接口，外部客户端/知识同步扩展点（I02），见 L0_存储层/集成接口.md"
+    }
   }
 }
