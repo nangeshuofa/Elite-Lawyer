@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "lawyer_name": "楠哥",
+  "firm_name": "四川恒和信律师事务所",
+  "license_no": "1110120XXXXXX",
+  "default_court": "北京市朝阳区法院",
+  "feishu_webhook": "",
+  "email": "",
+  "integration_enabled": false,
+  "knowledge_base_path": "L4_知识库层",
+  "state_path": ".state",
+  "domains": {
+    "active": ["医疗损害", "劳动争议", "合同纠纷"],
+    "available": ["医疗损害", "劳动争议", "合同纠纷", "民商综合", "行政诉讼", "刑事辩护", "婚姻家事", "知识产权"],
+    "note": "启用领域见 L0_存储层/领域配置.md，启用前需填充对应知识分片"
+  },
+  "extensions": {
+    "modules_registered": ["M01", "M02", "M03", "M04", "M05", "M06"],
+    "note": "模块登记见 L0_存储层/模块注册表.md"
+  },
+  "mcp_sources": {
+    "pkulaw": {
+      "enabled": false,
+      "type": "legal_db_mcp",
+      "status": "reserved",
+      "note": "北大法宝法律数据库 MCP，外部知识源扩展点（I01），见 L0_存储层/集成接口.md"
+    }
+  },
+  "integrations": {
+    "tencent_ima": {
+      "enabled": false,
+      "type": "knowledge_client",
+      "status": "reserved",
+      "note": "腾讯 ima 接口，外部客户端/知识同步扩展点（I02），见 L0_存储层/集成接口.md"
+    }
+  }
+}
