@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elite-Lawyer V6.8 系统架构图</title>
+<style>
+:root{
+  --ink:#1f2328;
+  --ink-soft:#57606a;
+  --ink-faint:#8b949e;
+  --paper:#f6f5f2;
+  --card:#ffffff;
+  --line:#d8d5cf;
+  --graphite:#3b3f43;
+  --l0:#4a5568;--l0-bg:#eef0f3;
+  --l1:#2b6cb0;--l1-bg:#e8f0f9;
+  --l2:#2f855a;--l2-bg:#e9f4ee;
+  --l3:#b7791f;--l3-bg:#faf1e0;
+  --l4:#805ad5;--l4-bg:#f2ecfa;
+  --accent:#c05621;
+  --accent-bg:#fdf0e7;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--paper);color:var(--ink);line-height:1.6;padding:32px 20px 48px;
+}
+.wrap{max-width:1060px;margin:0 auto}
+header{margin-bottom:28px}
+.title-row{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+h1{font-size:26px;font-weight:700;letter-spacing:.5px}
+.badge{
+  display:inline-block;font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;
+  background:var(--graphite);color:#fff;letter-spacing:.5px;
+}
+.meta{margin-top:6px;font-size:13px;color:var(--ink-soft)}
+.meta span{margin-right:14px}
+.schema{font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:28px;align-items:start}
+.chain{display:flex;flex-direction:column}
+.layer{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:16px 20px;position:relative;
+}
+.layer-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.lnum{
+  font-family:var(--mono);font-size:12px;font-weight:700;color:#fff;
+  padding:2px 9px;border-radius:6px;letter-spacing:.5px;flex:none;
+}
+.lname{font-size:17px;font-weight:700}
+.ltag{font-size:12px;color:var(--ink-soft)}
+.v63{
+  display:inline-block;font-size:11px;font-weight:600;color:var(--accent);
+  background:var(--accent-bg);border:1px solid #ecc4a8;border-radius:999px;
+  padding:1px 9px;flex:none;
+}
+.ldesc{font-size:13.5px;color:var(--ink-soft);margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  font-size:12.5px;padding:4px 12px;border-radius:7px;background:var(--l0-bg);
+  color:var(--ink);border:1px solid transparent;
+}
+.l0 .chip{background:var(--l0-bg);border-color:#d4dae2}
+.l1 .chip{background:var(--l1-bg);border-color:#c9dcef}
+.l2 .chip{background:var(--l2-bg);border-color:#cbe4d5}
+.l3 .chip{background:var(--l3-bg);border-color:#ecd9ae}
+.l4 .chip{background:var(--l4-bg);border-color:#ddd0f1}
+.v63-line{margin-top:10px;font-size:12.5px;color:var(--accent);display:flex;gap:6px;align-items:flex-start}
+.v63-line svg{flex:none;margin-top:2px}
+.arrow{display:flex;flex-direction:column;align-items:center;padding:2px 0;color:var(--ink-faint)}
+.arrow .lbl{font-size:11px;color:var(--ink-faint);margin:1px 0}
+.arrow svg{display:block}
+.side{display:flex;flex-direction:column;gap:16px;position:sticky;top:24px}
+.scard{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;
+}
+.scard h2{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.scard h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
+.scard p{font-size:12.5px;color:var(--ink-soft)}
+.scard .file{font-family:var(--mono);font-size:11.5px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:3px 8px;display:inline-block;margin:4px 0}
+.scard ul{list-style:none;font-size:12.5px;color:var(--ink-soft)}
+.scard li{padding:3px 0 3px 16px;position:relative}
+.scard li::before{content:"";position:absolute;left:2px;top:11px;width:6px;height:6px;border-radius:2px;background:var(--line)}
+.connect-note{font-size:11.5px;color:var(--ink-faint);border-top:1px dashed var(--line);margin-top:10px;padding-top:8px}
+footer{
+  margin-top:32px;border-top:1px solid var(--line);padding-top:16px;
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-size:12.5px;color:var(--ink-soft);
+}
+.principle{display:flex;gap:8px;flex-wrap:wrap}
+.pchip{font-size:12px;padding:3px 11px;border-radius:999px;border:1px solid var(--line);background:var(--card)}
+.pchip strong{font-weight:700}
+.hist{font-size:11.5px;color:var(--ink-faint);margin-top:10px}
+@media (max-width:880px){
+  .layout{grid-template-columns:1fr}
+  .side{position:static}
+}
+@media print{
+  body{background:#fff;padding:12px}
+  .layer,.scard{break-inside:avoid;box-shadow:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title-row">
+      <h1>Elite-Lawyer 精英律师数字助手 · 系统架构</h1>
+      <span class="badge">V6.8</span>
+    </div>
+    <div class="meta">
+      <span>楠哥说法</span><span>GPL-3.0</span>
+      <span class="schema">L0 + DA四层 + 扩展点 · schema v2</span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <main class="chain" aria-label="五层依赖链，自上而下 L0 至 L4">
+
+      <section class="layer l0" aria-label="L0 存储层">
+        <div class="layer-top"><span class="lnum" style="background:var(--l0)">L0</span><span class="lname">存储层</span><span class="ltag">地基：状态与规则约束</span></div>
+        <p class="ldesc">状态持久化 · 架构约束 · 扩展点注册</p>
+        <div class="chips">
+          <span class="chip">存储契约</span><span class="chip">架构约束</span><span class="chip">模块注册表</span><span class="chip">领域配置</span><span class="chip">演进指南</span><span class="chip">集成接口（北大法宝 MCP / ima，预留）</span>
+        </div>
+      </section>
+
+      <div class="arrow" role="img" aria-label="依赖方向：L0 向下支撑 L1">
+        <svg width="16" height="30" viewBox="0 0 16 30" aria-hidden="true"><path d="M8 1v22M2 17l6 7 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="lbl">支撑</span>
+      </div>
+
+      <section class="layer l1" aria-label="L1 内核层">
+        <div class="layer-top"><span class="lnum" style="background:var(--l1)">L1</span><span class="lname">内核层</span><span class="ltag">全局优先级唯一来源</span><span class="v63">V6.5</span></div>
+        <p class="ldesc">角色定位 · 执业原则 · 成事哲学 · 元认知</p>
+        <div class="chips">
+          <span class="chip">角色定位</span><span class="chip">执业原则</span><span class="chip">成事哲学（会成事/风险处置/不越界）</span><span class="chip">元认知 ★V6.5（动中觉察/过程检视/跟踪检查/持续改进）</span>
+        </div>
+        <div class="v63-line">
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 3.2v3.4M6 8.6v.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>元认知闭环：动中觉察 → 过程检视 → 跟踪检查 → 持续改进 —— 每周六自检落地1个改进的引擎</span>
+        </div>
+        <div class="v63-line">
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 3.2v3.4M6 8.6v.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>灰度保留：不可逆操作 · 超阈值风险 · 原则取舍 · 事实存疑 —— 必须人工拍板</span>
+        </div>
+      </section>
+
+      <div class="arrow" role="img" aria-label="依赖方向：L1 向下驱动 L2">
+        <svg width="16" height="30" viewBox="0 0 16 30" aria-hidden="true"><path d="M8 1v22M2 17l6 7 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="lbl">驱动</span>
+      </div>
+
+      <section class="layer l2" aria-label="L2 机制层">
+        <div class="layer-top"><span class="lnum" style="background:var(--l2)">L2</span><span class="lname">机制层</span><span class="ltag">纯规则，被 L3 引用</span><span class="v63">V6.8</span></div>
+        <p class="ldesc">不直接面对用户，为模块提供标准机制</p>
+        <div class="chips">
+          <span class="chip">案件流程引擎</span><span class="chip">时效预警</span><span class="chip">知识发现</span><span class="chip">质量控制（可信度分级）</span><span class="chip">边缘计算 ★V6.8（轻量/非重要运算就近处理）</span>
+        </div>
+        <div class="v63-line">
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 3.2v3.4M6 8.6v.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>新增边缘计算机制：轻量运算与非重要运算下沉至边缘计算模型系统——提高响应速度、降低成本；重要运算与灰度决策仍回主模型</span>
+        </div>
+      </section>
+
+      <div class="arrow" role="img" aria-label="依赖方向：L2 向下赋能 L3">
+        <svg width="16" height="30" viewBox="0 0 16 30" aria-hidden="true"><path d="M8 1v22M2 17l6 7 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="lbl">赋能</span>
+      </div>
+
+      <section class="layer l3" aria-label="L3 模块层">
+        <div class="layer-top"><span class="lnum" style="background:var(--l3)">L3</span><span class="lname">模块层</span><span class="ltag">可扩展 · 功能模块 + 后勤支持模块</span><span class="v63">V6.7</span></div>
+        <p class="ldesc">面向用户的功能入口，经 L2 机制运转；后勤支持模块为主战场提供保障</p>
+        <div class="chips">
+          <span class="chip">案件管理</span><span class="chip">文书生成</span><span class="chip">法律检索</span><span class="chip">法律意见 ★V6.6（咨询→研究→意见书）</span><span class="chip">合同审核 ★V6.3 执行细则</span><span class="chip">客户管理</span><span class="chip">日程排期 ★V6.5.1</span><span class="chip">待办管理 ★V6.5.1（与日程排期联动）</span><span class="chip">财务管理 ★V6.4（业绩统计分析 / 报销管理 / 发票管理）</span>
+        </div>
+        <p class="ldesc" style="margin-top:10px">后勤支持模块 ★V6.7 —— 主战场的后方保障体系</p>
+        <div class="chips">
+          <span class="chip">团队管理（团队成员 / 人力资源 / 关系管理）</span><span class="chip">组织管理（队伍建设 / 团队内部关系）</span><span class="chip">健康管理（健康与运动 · 联动法律人康教练）</span><span class="chip">物资管理（物资调度与补给）</span><span class="chip">环境构建（场景构建与场景秩序）</span>
+        </div>
+        <div class="v63-line">
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 3.2v3.4M6 8.6v.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>新增后勤支持模块五子模块：团队 / 组织 / 健康 / 物资 / 环境 —— 兵马未动粮草先行，为核心业务层供能</span>
+        </div>
+        <div class="v63-line">
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 3.2v3.4M6 8.6v.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>新增财务模块：业绩统计分析 · 报销管理 · 发票管理 —— 与财务教练、财富状态锚点联动</span>
+        </div>
+      </section>
+
+      <div class="arrow" role="img" aria-label="依赖方向：L3 向下沉淀至 L4">
+        <svg width="16" height="30" viewBox="0 0 16 30" aria-hidden="true"><path d="M8 1v22M2 17l6 7 6-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="lbl">读写</span>
+      </div>
+
+      <section class="layer l4" aria-label="L4 知识库层">
+        <div class="layer-top"><span class="lnum" style="background:var(--l4)">L4</span><span class="lname">知识库层</span><span class="ltag">按领域分片 + 读写协议</span><span class="v63">V6.3</span></div>
+        <p class="ldesc">知识复利：卡片带指纹/溯源，关系织网 8 种专业关系</p>
+        <div class="chips">
+          <span class="chip">法规库</span><span class="chip">案例库</span><span class="chip">模板库</span><span class="chip">裁判规则</span><span class="chip">relations.md 关系层</span>
+        </div>
+        <div class="v63-line">
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6 3.2v3.4M6 8.6v.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span>新增政采分片：法规库·政府采购法（49/50条+官方口径）+ 裁判规则·政府采购4卡，关系线已登记</span>
+        </div>
+      </section>
+    </main>
+
+    <aside class="side" aria-label="旁路机制与升级要点">
+      <div class="scard">
+        <h2><span class="dot"></span>auto_profile 自动画像协议</h2>
+        <p>安装即可用，不预填个人化配置。使用中从对话上下文自动识别并回写：</p>
+        <span class="file">.state/config.json</span>
+        <p>空白字段不阻塞任何功能；也可对话中"设置我的律所为XX"主动指定。</p>
+        <p class="connect-note">旁路接入 L1 执业原则与 L3 各模块</p>
+      </div>
+      <div class="scard">
+        <h2><span class="dot"></span>灰度决策边界</h2>
+        <ul>
+          <li>不可逆操作（解除/撤诉/放弃权利）</li>
+          <li>超出常规阈值的风险接受</li>
+          <li>原则性条款的取舍</li>
+          <li>事实真伪存疑时的定性</li>
+        </ul>
+        <p class="connect-note">机器算得出选项，算不出担责</p>
+      </div>
+      <div class="scard">
+        <h2><span class="dot"></span>V6.8 边缘计算机制</h2>
+        <div class="card-body">
+          <p><strong>定位</strong>：机制层的算力分流规则——轻量运算、非重要运算下沉至边缘计算模型系统就近处理，提高响应速度、降低调用成本。</p>
+          <p><strong>分流原则</strong>：模板填充、格式转换、简单检索、状态查询等走边缘；法律分析、文书起草、合同审查、灰度决策等仍回主模型。<strong>判定标准</strong>：是否涉及法律判断与不可逆操作。</p>
+        </div>
+        <p class="connect-note">为 L3 全部模块供能，与 L1 灰度决策边界衔接——机器算得出选项，算不出担责</p>
+      </div>
+      <div class="scard">
+        <h2><span class="dot"></span>V6.7 后勤支持模块</h2>
+        <div class="card-body">
+          <p><strong>定位</strong>：主战场的后方保障体系——兵马未动，粮草先行。</p>
+        </div>
+        <ul>
+          <li><strong>团队管理</strong>：团队成员、人力资源、对外关系管理</li>
+          <li><strong>组织管理</strong>：队伍建设、团队内部关系管理</li>
+          <li><strong>健康管理</strong>：健康与运动管理，联动法律人康教练</li>
+          <li><strong>物资管理</strong>：物资调度与补给</li>
+          <li><strong>环境构建</strong>：场景构建与场景秩序</li>
+        </ul>
+        <p class="connect-note">对内保障核心业务层运转，对外承接组织与人脉资源</p>
+      </div>
+      <div class="scard">
+        <h2><span class="dot"></span>V6.6 法律意见模块</h2>
+        <div class="card-body">
+          <p><strong>三步流程</strong>：① 咨询问题受理——明确主体/事实/诉求；② 检索研究——法规+类案+权威观点，多源交叉验证；③ 出具法律意见书——恒和信版式，结论前置、风险列明，DOCX+PDF双版本交付。</p>
+          <p><strong>与既有模块衔接</strong>：法律检索供料、文书生成排版、合同审核共享审查口径；意见书遵循限定范围+列明风险点的规范表述（禁绝对兜底表述）。</p>
+        </div>
+      </div>
+      <div class="scard">
+        <h2><span class="dot"></span>V6.5 元认知模块</h2>
+        <div class="card-body">
+          <p><strong>内核层引擎</strong>：驱动全层复盘与进化</p>
+        </div>
+        <ul>
+          <li>动中觉察：执行中实时感知偏离</li>
+          <li>过程检视：阶段性回看方法与路径</li>
+          <li>跟踪检查：结果对目标的闭环核验</li>
+          <li>持续改进：每周六自检落地1个改进</li>
+        </ul>
+      </div>
+      <div class="scard">
+        <h2><span class="dot"></span>V6.5.1 日程排期 × 待办管理 双轨联动</h2>
+        <div class="card-body">
+          <p><strong>分工（既有区分）</strong>：日程排期管「定人定时刻」的硬日程——开庭、值班、会议、立案截止，到点执行不顺延；待办管理管「无固定时刻」的任务池——跟进、文书、催收，未完成自动顺延次日。</p>
+          <p><strong>联动（双向通道）</strong>：日程可派生待办（开庭日程自动挂出「庭审提纲/证据清单」前置任务）；待办可升格日程（截止日临近的任务自动上日程排期）；每日待办先滚动前日未完项，再叠加当日日程派生项。对应三层时间管理 V2.0 的 L1 硬日程与 L3 待办池。</p>
+        </div>
+      </div>
+      <div class="scard">
+        <h2><span class="dot"></span>V6.4 财务模块</h2>
+        <ul>
+          <li>业绩统计分析：创收/案件/客户多维统计</li>
+          <li>报销管理：垫付记录、报销进度追踪</li>
+          <li>发票管理：开票跟踪、回款对账</li>
+        </ul>
+        <p class="connect-note">与财务教练体系、月度账单模板联动</p>
+      </div>
+      <div class="scard">
+        <h2><span class="dot"></span>V6.3 升级原则</h2>
+        <ul>
+          <li>安装即用，使用中自动完善</li>
+          <li>全链路保留灰度留人决策</li>
+          <li>政采知识自主沉淀、深度学习</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    <div class="principle">
+      <span class="pchip"><strong>稳定性</strong> &gt; 可维护性 &gt; 可扩展性</span>
+      <span class="pchip">适应业务变化 · 支持持续演进</span>
+    </div>
+    <div>作者：楠哥说法 · 2026-09-17</div>
+  </footer>
+  <p class="hist">版本沿革：V6.2 关系织网 → V6.2.2 成事哲学 → V6.3 安装即用+灰度决策+政采沉淀（commit 61440a4981 / 29556bbca4）→ V6.4 模块层新增财务模块（业绩统计分析/报销管理/发票管理）→ V6.5 内核层新增元认知模块（动中觉察/过程检视/跟踪检查/持续改进）→ V6.5.1 日程提醒升级为日程排期，新增待办管理模块，双轨联动（日程定时刻，待办管任务；日程派生待办、待办升格日程）→ V6.6 模块层新增法律意见模块（咨询问题→检索研究→出具法律意见书）→ V6.7 模块层新增后勤支持模块（团队管理/组织管理/健康管理/物资管理/环境构建，五子模块保障主战场）→ V6.8 机制层新增边缘计算机制（轻量与非重要运算下沉边缘系统，提速降本；重要运算与灰度决策回主模型）</p>
+</div>
+</body>
+</html>
